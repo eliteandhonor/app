@@ -1,0 +1,39 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/mini-apps/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  formType  String   @default("general") // general, feedback, support
+  status    String   @default("new") // new, read, responded
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contacts")
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  toolId    String?  // Which tool the feedback is about
+  rating    Int?     // 1-5 star rating
+  comment   String?
+  userAgent String?  // Browser info for debugging
+  createdAt DateTime @default(now())
+
+  @@map("feedback")
+}
